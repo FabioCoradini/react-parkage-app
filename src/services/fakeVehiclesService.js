@@ -56,8 +56,8 @@ export function getVehicle(id) {
 export function saveVehicle(vehicle) {
   let vehiclesInDb = vehicles.find((m) => m._id === vehicle._id) || {};
   vehiclesInDb.plate = vehicle.plate;
-  vehiclesInDb.type = vehiclesTypeAPI.types.find(
-    (vT) => vT._id === vehicle.type._id
+  vehiclesInDb.type = vehiclesTypeAPI.vehiclesTypes.find(
+    (vT) => vT._id === vehicle.typeId
   );
   vehiclesInDb.year = vehicle.year;
 

@@ -5,6 +5,9 @@ const NavBar = (props) => {
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="navbar-nav">
+        <NavLink className="nav-item nav-link" to="/vehicles">
+          Vehicles
+        </NavLink>
         <NavLink className="nav-item nav-link" to="/movies">
           Movies
         </NavLink>

@@ -1,5 +1,5 @@
 ﻿import React, { Component } from "react";
-import Table from "./common/table";
+import Table from "./../common/table";
 import { Link } from "react-router-dom";
 
 class VehicleTable extends Component {

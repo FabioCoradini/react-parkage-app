@@ -1,36 +1,39 @@
 ﻿import React, { Component } from "react";
 import _ from "loadsh";
-import { getMovies, deleteMovie } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
-import MoviesTable from "./moviesTable";
-import Pagination from "./common/pagination";
-import { paginate } from "./../utils/paginate";
-import LisGroup from "./common/listGroup";
+import {
+  getVehicles,
+  deleteVehicle,
+} from "./../../services/fakeVehiclesService";
+import { getVehiclesTypes } from "./../../services/fakeVehiclesTypeService";
+import VehiclesTable from "./vehiclesTable";
+import Pagination from "./../common/pagination";
+import { paginate } from "./../../utils/paginate";
+import LisGroup from "./../common/listGroup";
 import { Link } from "react-router-dom";
-import SearchBox from "./searchBox";
+import SearchBox from "./../searchBox";
 
-class Movies extends Component {
+class Vehicles extends Component {
   state = {
-    movies: [],
-    genres: [],
+    vehicles: [],
+    types: [],
     pageSize: 4,
     currentPage: 1,
-    selectedGenre: null,
+    selectedType: null,
     searchQuery: "",
-    sortColumn: { path: "title", order: "asc" },
+    sortColumn: { path: "plate", order: "asc" },
   };
   search = React.createRef();
 
   componentDidMount() {
     this.setState({
-      movies: getMovies(),
-      genres: [{ name: "All Genres" }, ...getGenres()],
+      vehicles: getVehicles(),
+      types: [{ name: "All Types" }, ...getVehiclesTypes()],
     });
   }
 
   handleDelete = (movie) => {
-    deleteMovie(movie._id);
-    this.setState({ movies: getMovies() });
+    deleteVehicle(movie._id);
+    this.setState({ vehicles: getVehicles() });
   };
 
   handleSort = (sortColumn) => {
@@ -38,89 +41,76 @@ class Movies extends Component {
   };
 
   handleSearch = (query) => {
-    this.setState({ searchQuery: query, selectedGenre: null, currentPage: 1 });
+    this.setState({ searchQuery: query, selectedType: null, currentPage: 1 });
   };
 
-  handleGenreSelected = (genre) => {
-    this.setState({ selectedGenre: genre, currentPage: 1, searchQuery: "" });
-  };
-
-  handleLike = (movie) => {
-    const movies = [...this.state.movies];
-    var index = movies.indexOf(movie);
-    movies[index] = { ...movies[index] };
-    movies[index].liked = !movies[index].liked;
-    this.setState({ movies });
+  handleTypeSelected = (type) => {
+    this.setState({ selectedType: type, currentPage: 1, searchQuery: "" });
   };
 
   handlePageChange = (page) => {
     this.setState({ currentPage: page });
   };
 
-  getClass = (movie) => {
-    return (
-      "fa fa-heart" + (this.state.listLiked.includes(movie._id) ? "" : "-o")
-    );
-  };
-
   getPagedData() {
     const {
       pageSize,
       currentPage,
-      movies: allMovies,
-      selectedGenre,
+      vehicles: allVehicles,
+      selectedType,
       sortColumn,
       searchQuery,
     } = this.state;
 
-    let filtered = allMovies;
+    console.log(allVehicles);
+
+    let filtered = allVehicles;
     if (searchQuery)
-      filtered = allMovies.filter((m) =>
-        m.title.toLowerCase().startsWith(searchQuery.toLowerCase())
+      filtered = allVehicles.filter((v) =>
+        v.plate.toLowerCase().startsWith(searchQuery.toLowerCase())
       );
-    else if (selectedGenre && selectedGenre._id)
-      filtered = allMovies.filter((m) => m.genre._id === selectedGenre._id);
+    else if (selectedType && selectedType._id)
+      filtered = allVehicles.filter((v) => v.type._id === selectedType._id);
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
-    const movies = paginate(sorted, currentPage, pageSize);
+    const vehicles = paginate(sorted, currentPage, pageSize);
 
-    return { totalCount: filtered.length, data: movies };
+    return { totalCount: filtered.length, data: vehicles };
   }
 
   render() {
-    const { length: count } = this.state.movies;
+    const { length: count } = this.state.vehicles;
     const {
       pageSize,
       currentPage,
-      genres,
-      selectedGenre,
+      types,
+      selectedType,
       sortColumn,
       searchQuery,
     } = this.state;
 
-    if (count === 0) return "No movies in Database";
+    if (count === 0) return "No vehicles in Database";
 
-    const { totalCount, data: movies } = this.getPagedData();
+    const { totalCount, data: vehicles } = this.getPagedData();
 
     return (
       <div className="row m-2">
         <div className="col-3">
           <LisGroup
-            items={genres}
-            selectedItem={selectedGenre}
-            onItemSelected={this.handleGenreSelected}
+            items={types}
+            selectedItem={selectedType}
+            onItemSelected={this.handleTypeSelected}
           />
         </div>
         <div className="col">
-          <Link to="/movies/new" className="btn btn-primary">
-            New movie
+          <Link to="/vehicles/new" className="btn btn-primary">
+            New vehicle
           </Link>
           <SearchBox value={searchQuery} onChange={this.handleSearch} />
 
-          <p> Showing {totalCount} movies in Database. </p>
-          <MoviesTable
-            movies={movies}
-            onLike={this.handleLike}
+          <p> Showing {totalCount} vehicles in Database. </p>
+          <VehiclesTable
+            vehicles={vehicles}
             onDelete={this.handleDelete}
             onSort={this.handleSort}
             sortColumn={sortColumn}
@@ -138,4 +128,4 @@ class Movies extends Component {
   }
 }
 
-export default Movies;
+export default Vehicles;

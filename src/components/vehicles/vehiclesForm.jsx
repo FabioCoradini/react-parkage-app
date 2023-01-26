@@ -1,8 +1,8 @@
 ﻿import React from "react";
-import Form from "./common/form";
+import Form from "./../common/form";
 import Joi from "joi-browser";
-import { getVehicle, saveVehicle } from "../services/fakeVehiclesService";
-import { getVehiclesTypes } from "../services/fakeVehiclesTypeService";
+import { getVehicle, saveVehicle } from "./../../services/fakeVehiclesService";
+import { getVehiclesTypes } from "./../../services/fakeVehiclesTypeService";
 
 class MovieForm extends Form {
   state = {
